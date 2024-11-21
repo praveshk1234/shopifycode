@@ -1,0 +1,163 @@
+<!doctype html>
+<html class="js" lang="{{ request.locale.iso_code }}">
+  
+<style>
+.icon svg {
+    width: 12px;
+    height: 12px;
+}
+</style>
+  <head> 
+	
+<style>
+.header .icon-button__icon .icon { width: 24px !important; }
+</style>
+    <title>
+      {{ page_title }}
+      {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
+      {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
+
+    {% if page_description %}
+      <meta name="description" content="{{ page_description | escape }}">
+    {% endif %}
+
+    {% render 'meta-tags' %}
+
+ {% comment %} remove URLs from asyncLoad {% endcomment %}
+
+{% unless template contains "index" or template contains "collection" or template contains "product" %}
+   {{ content_for_header }}
+{% else %}  
+   {% capture custom_content_for_header %}
+
+    {{ content_for_header }}
+  {% endcapture %}
+  {{ custom_content_for_header | replace:'href=','class="lazycss" data-href=' | replace:"<script>","<script type='lazyload2'>" | replace: '<script class="analytics">','<script class="analytics" type="lazyload2">' | replace: 'defer="defer" src=','defer="defer" type="lazyload2" data-src=' }}
+{% endunless %}
+
+
+
+    {%- unless settings.type_body_font.system? -%}
+      {% comment %}theme-check-disable AssetPreload{% endcomment %}
+      <link rel="preload" as="font" href="{{ settings.type_body_font | font_url }}" type="font/woff2" crossorigin>
+      {% comment %}theme-check-enable AssetPreload{% endcomment %}
+    {%- endunless -%}
+    {%- unless settings.type_header_font.system? -%}
+      {% comment %}theme-check-disable AssetPreload{% endcomment %}
+      <link rel="preload" as="font" href="{{ settings.type_header_font | font_url }}" type="font/woff2" crossorigin>
+      {% comment %}theme-check-enable AssetPreload{% endcomment %}
+    {%- endunless -%}
+
+    {%- if localization.available_countries.size > 1 or localization.available_languages.size > 1 -%}
+      {{ 'component-localization-form.css' | asset_url | stylesheet_tag: preload: true }}
+      <script src="{{ 'localization-form.js' | asset_url }}" defer="defer"></script>
+    {%- endif -%}
+
+
+
+    <script>
+      if (Shopify.designMode) {
+        document.documentElement.classList.add('shopify-design-mode');
+      }
+     </script>     
+    <script type="lazyload2">
+
+</script>
+  
+
+    
+  {% render 'prime-css' %} </head>
+
+  <body class="no-js-body gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
+   <style>
+     .no-js-body #MainContent > section + section, 
+       .no-js-body #MainContent > div + section,
+      .no-js-body #MainContent >  section + div,
+    .no-js-body footer, 
+    .no-js-body .shopify-section-group-header-group.smi-section{
+       display:none
+     }
+     @media (max-width:768px){
+       .circle-menu--section .swiper-wrapper >* {
+       max-width:100px;
+     }
+     }
+   </style>
+    <a class="skip-to-content-link-2" href="#MainContent" style="position:fixed;bottom:20px;left:20px;color:#888;font-size:5px;">
+      SKIP
+    </a>
+
+    {%- if settings.cart_type == 'drawer' -%}
+      {%- render 'cart-drawer' -%}
+    {%- endif -%}
+
+    {% sections 'header-group' %}
+
+    <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
+      {% capture main_data %}
+      {{ content_for_layout }}
+      {% endcapture %}
+      {{ main_data | replace:'lazy="loading"','loading="lazy"' | replace:"<img src=","<img alt='video img' class='lazy2' data-src=" }}
+    </main>
+
+    {% sections 'footer-group' %}
+
+    <ul hidden>
+      <li id="a11y-refresh-page-message">{{ 'accessibility.refresh_page' | t }}</li>
+      <li id="a11y-new-window-message">{{ 'accessibility.link_messages.new_window' | t }}</li>
+    </ul>
+
+  
+    {%- if settings.predictive_search_enabled -%}
+      <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
+    {%- endif -%}
+  {%- sections 'smi-group' -%}
+
+{% if template contains "cart" %}{% endif %} 
+{% render 'razorpay-magic-checkout' %}
+ 
+    {% unless template contains "index" %}{% endunless %}
+{% render 'primeb-js' %} 
+    {% render 'primebcustomerloc-js' %} 
+    
+   <script>
+var windowWidth,lazyLink,lazyImages,lazyBackground,lazyIframe,lazyScripts,navigator_platform,lazyLoadedJS,src,style,datasrc,urls,analytics,s,x,i,j,flag;function init(){flag&&(flag=0,lazyLoadImg(),lazyLoadBackground(),lazyLoadIframe(),load_all_js())}function isElementInViewport(t){var a=t.getBoundingClientRect();return a.top>=0&&a.left>=0&&a.bottom<=(window.innerHeight||document.documentElement.clientHeight)&&a.right<=(window.innerWidth||document.documentElement.clientWidth)}function lazyLoadLink(){lazyLink.forEach(function(t){t.href=null==t.dataset.href?t.href:t.dataset.href})}function lazyLoadImg(){lazyImages.forEach(function(t){null!=(src=windowWidth<600?null==t.dataset.mobsrc?t.dataset.src:t.dataset.mobsrc:t.dataset.src)&&(t.src=src),t.classList.remove("lazy2")})}function lazyLoadImg2(){lazyImages.forEach(function(t){isElementInViewport(t)&&(null!=(src=windowWidth<600?null==t.dataset.mobsrc?t.dataset.src:t.dataset.mobsrc:t.dataset.src)&&(t.src=src),t.classList.remove("lazy"))})}function lazyLoadBackground(){lazyBackground.forEach(function(t){lazybg=windowWidth<600?null==t.dataset.mobstyle?t.dataset.style:t.dataset.mobstyle:t.dataset.style,null!=lazybg&&(t.style=lazybg),t.classList.remove("lazybg")})}function lazyLoadIframe(){lazyIframe.forEach(function(t){t.src=null==t.dataset.src?t.src:t.dataset.src})}function lazyLoadScripts(){j!=lazyScripts.length&&("lazyload2"==lazyScripts[j].getAttribute("type")?(lazyScripts[j].setAttribute("type","lazyloaded"),void 0!==lazyScripts[j].dataset.src?((s=document.createElement("script")).src=lazyScripts[j].dataset.src,document.body.appendChild(s),s.onload=function(){j++,lazyLoadScripts()}):((s=document.createElement("script")).innerHTML=lazyScripts[j].innerHTML,document.body.appendChild(s),j++,lazyLoadScripts())):(j++,lazyLoadScripts()))}function lazyLoadCss(t){(s=document.createElement("link")).rel="stylesheet",s.href=t,document.getElementsByTagName("head")[0].appendChild(s)}function lazyLoadJS(t){if(lazyLoadedJS)return setTimeout(function(){lazyLoadJS(t)},200),!1;lazyLoadedJS=1,(s=document.createElement("script")).src=t,s.onload=function(){lazyLoadedJS=0},document.body.appendChild(s)}document.addEventListener("DOMContentLoaded",function(){windowWidth=screen.width,lazyLink=document.querySelectorAll("link"),lazyImages=document.querySelectorAll("img.lazy2"),nolazyImages=document.querySelectorAll("img.lazy"),lazyBackground=document.querySelectorAll(".lazybg"),lazyIframe=document.querySelectorAll("iframe"),lazyScripts=document.getElementsByTagName("script"),navigator_platform=navigator.platform,i=0,j=0,flag=1,window.addEventListener("scroll",function(){init()}),window.addEventListener("mousemove",function(){init()}),window.addEventListener("touchstart",function(){init()}),"Linux x86_64"!=navigator_platform&&init(),setTimeout(function(){init()},60000)});
+
+function load_all_js() {
+	//lazyLoadCss();
+if(document.querySelectorAll('.lazycss') != null){
+		document.querySelectorAll('.lazycss').forEach(function(elem) {
+		  elem.href = elem.getAttribute('data-href');   
+		});
+	}
+	
+		console.log("Yes-optimization");
+		setTimeout(function() {
+			const wnw_load = new Event('wnw_load');
+			window.dispatchEvent(wnw_load);
+		}, 100);
+setTimeout(function() { 
+             document.body.classList.remove("no-js-body");
+             document.querySelector(".skip-to-content-link-2").remove();
+	    }, 300);
+		 
+    //document.querySelector("[hide-on-load]").remove()
+	j=0;
+	lazyScripts = document.getElementsByTagName("script");
+	lazyLoadScripts();
+
+	setInterval(function() {
+		lazyImages = document.querySelectorAll('img.lazy2');
+		lazyBackground = document.querySelectorAll('.lazybg');
+		lazyLoadImg();
+		lazyLoadBackground();
+	}, 2000);
+}
+ 
+</script>
+  </body>
+</html>
+
+
